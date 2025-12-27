@@ -1,5 +1,6 @@
 import streamlit as st
 import yfinance as yf
+import pandas as pd
 import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
 
@@ -20,18 +21,40 @@ div[data-testid="column"] {
     display: flex;
     align-items: center;
 }
+
 .row-box {
-    height: 90px;
+    height: 75px;
     display: flex;
     align-items: center;
 }
+
 .stock-text {
     font-size: 18px;
     font-weight: 700;
 }
-.cell-text {
+
+.ltp-text {
+    font-size: 16px;
+    color: #4da6ff;   /* sky blue */
+    font-weight: 600;
+}
+
+.lot-text {
     font-size: 16px;
 }
+
+.contract-text {
+    font-size: 16px;
+    color: #2ecc71;   /* green */
+    font-weight: 600;
+}
+
+.ath-text {
+    font-size: 16px;
+    color: #ff6b6b;   /* light red */
+    font-weight: 600;
+}
+
 .row-separator {
     border-bottom: 1px solid #2a2a2a;
     margin: 6px 0 10px 0;
@@ -82,48 +105,51 @@ def fetch_stock_data(symbol):
         auto_adjust=False,
         progress=False
     )
-    df.dropna(inplace=True)
+
+    if isinstance(df.columns, pd.MultiIndex):
+        df.columns = df.columns.get_level_values(0)
+
+    df = df.dropna()
     return df
 
 
 def draw_small_chart(df):
     last_year = df[df.index >= (datetime.today() - timedelta(days=365))]
 
-    fig, ax = plt.subplots(figsize=(2.8, 1.3))
-    ax.plot(last_year["Close"], linewidth=1.5)
+    fig, ax = plt.subplots(figsize=(1.4, 0.6))  # 🔽 50% smaller
+    ax.plot(last_year["Close"], linewidth=1.2)
     ax.margins(x=0)
     ax.axis("off")
+
     st.pyplot(fig, clear_figure=True)
 
 # ---------------------------------
 # TABLE HEADER
 # ---------------------------------
-headers = st.columns([1.6, 1.3, 1, 1.6, 1.4, 2])
+headers = st.columns([1.6, 1.3, 1, 1.6, 1.4, 1.4])
 headers[0].markdown("**Stock**")
-headers[1].markdown("**Prev Close**")
+headers[1].markdown("**LTP**")
 headers[2].markdown("**Lot Size**")
 headers[3].markdown("**Contract Value (₹)**")
 headers[4].markdown("**% Below ATH**")
-headers[5].markdown("**1Y Chart**")
+headers[5].markdown("**Chart**")
 
 st.divider()
 
 # ---------------------------------
-# MAIN LOOP (SAFE)
+# MAIN LOOP
 # ---------------------------------
 for stock, symbol in STOCKS.items():
     df = fetch_stock_data(symbol)
 
-    # 🚨 SAFETY CHECK (CRITICAL)
-    if df.empty or "Close" not in df.columns:
-        row = st.columns([1.6, 1.3, 1, 1.6, 1.4, 2])
+    if df.empty or not all(col in df.columns for col in ["Close", "High"]):
+        row = st.columns([1.6, 1.3, 1, 1.6, 1.4, 1.4])
         row[0].markdown(f"<div class='row-box stock-text'>{stock}</div>", unsafe_allow_html=True)
-        row[1].markdown("<div class='row-box cell-text'>N/A</div>", unsafe_allow_html=True)
-        row[2].markdown(f"<div class='row-box cell-text'>{LOT_SIZES.get(stock, 0)}</div>", unsafe_allow_html=True)
-        row[3].markdown("<div class='row-box cell-text'>N/A</div>", unsafe_allow_html=True)
-        row[4].markdown("<div class='row-box cell-text'>Data unavailable</div>", unsafe_allow_html=True)
-        row[5].markdown("<div class='row-box cell-text'>—</div>", unsafe_allow_html=True)
-
+        row[1].markdown("<div class='row-box'>N/A</div>", unsafe_allow_html=True)
+        row[2].markdown(f"<div class='row-box'>{LOT_SIZES.get(stock,0)}</div>", unsafe_allow_html=True)
+        row[3].markdown("<div class='row-box'>N/A</div>", unsafe_allow_html=True)
+        row[4].markdown("<div class='row-box'>Data unavailable</div>", unsafe_allow_html=True)
+        row[5].markdown("<div class='row-box'>—</div>", unsafe_allow_html=True)
         st.markdown("<div class='row-separator'></div>", unsafe_allow_html=True)
         continue
 
@@ -134,12 +160,13 @@ for stock, symbol in STOCKS.items():
     lot = LOT_SIZES.get(stock, 0)
     contract_value = int(prev_close * lot)
 
-    row = st.columns([1.6, 1.3, 1, 1.6, 1.4, 2])
+    row = st.columns([1.6, 1.3, 1, 1.6, 1.4, 1.4])
+
     row[0].markdown(f"<div class='row-box stock-text'>{stock}</div>", unsafe_allow_html=True)
-    row[1].markdown(f"<div class='row-box cell-text'>{round(prev_close,2)}</div>", unsafe_allow_html=True)
-    row[2].markdown(f"<div class='row-box cell-text'>{lot}</div>", unsafe_allow_html=True)
-    row[3].markdown(f"<div class='row-box cell-text'>₹ {contract_value:,}</div>", unsafe_allow_html=True)
-    row[4].markdown(f"<div class='row-box cell-text'>{pct_below_ath} %</div>", unsafe_allow_html=True)
+    row[1].markdown(f"<div class='row-box ltp-text'>{round(prev_close,2)}</div>", unsafe_allow_html=True)
+    row[2].markdown(f"<div class='row-box lot-text'>{lot}</div>", unsafe_allow_html=True)
+    row[3].markdown(f"<div class='row-box contract-text'>₹ {contract_value:,}</div>", unsafe_allow_html=True)
+    row[4].markdown(f"<div class='row-box ath-text'>{pct_below_ath} %</div>", unsafe_allow_html=True)
 
     with row[5]:
         draw_small_chart(df)
