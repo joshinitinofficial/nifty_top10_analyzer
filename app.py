@@ -62,7 +62,12 @@ div[data-testid="column"] {
 </style>
 """, unsafe_allow_html=True)
 
-st.markdown("## 📊 NIFTY Top 10 Equal Weight – Live Snapshot")
+st.markdown("""
+<h2 style='text-align: center; margin-top: -10px;'>
+📊 NIFTY Top 10 Equal Weight – Live Snapshot
+</h2>
+""", unsafe_allow_html=True)
+
 
 # ---------------------------------
 # USER CONFIG
