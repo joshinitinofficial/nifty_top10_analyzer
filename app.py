@@ -17,6 +17,21 @@ st.set_page_config(
 # ---------------------------------
 st.markdown("""
 <style>
+/* Remove Streamlit default top padding */
+.block-container {
+    padding-top: 1.2rem;
+}
+
+/* Centered main heading with equal spacing */
+.main-title {
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 28px;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+/* Existing styles */
 div[data-testid="column"] {
     display: flex;
     align-items: center;
@@ -35,7 +50,7 @@ div[data-testid="column"] {
 
 .ltp-text {
     font-size: 16px;
-    color: #4da6ff;   /* sky blue */
+    color: #4da6ff;
     font-weight: 600;
 }
 
@@ -45,13 +60,13 @@ div[data-testid="column"] {
 
 .contract-text {
     font-size: 16px;
-    color: #2ecc71;   /* green */
+    color: #2ecc71;
     font-weight: 600;
 }
 
 .ath-text {
     font-size: 16px;
-    color: #ff6b6b;   /* light red */
+    color: #ff6b6b;
     font-weight: 600;
 }
 
@@ -62,11 +77,13 @@ div[data-testid="column"] {
 </style>
 """, unsafe_allow_html=True)
 
+
 st.markdown("""
-<h2 style='text-align: center; margin-top: -20px;'>
+<div class="main-title">
 📊 NIFTY Top 10 Equal Weight – Live Snapshot
-</h2>
+</div>
 """, unsafe_allow_html=True)
+
 
 
 # ---------------------------------
