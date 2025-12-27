@@ -63,7 +63,7 @@ div[data-testid="column"] {
 """, unsafe_allow_html=True)
 
 st.markdown("""
-<h2 style='text-align: center; margin-top: -10px;'>
+<h2 style='text-align: center; margin-top: 10px;'>
 📊 NIFTY Top 10 Equal Weight – Live Snapshot
 </h2>
 """, unsafe_allow_html=True)
@@ -86,16 +86,16 @@ STOCKS = {
 }
 
 LOT_SIZES = {
-    "RELIANCE": 100,
-    "TCS": 100,
-    "HDFCBANK": 100,
-    "INFY": 100,
-    "ICICIBANK": 100,
-    "HINDUNILVR": 100,
-    "ITC": 100,
-    "LT": 100,
-    "SBIN": 100,
-    "BHARTIARTL": 100
+    "RELIANCE": 500,
+    "TCS": 175,
+    "HDFCBANK": 550,
+    "INFY": 400,
+    "ICICIBANK": 700,
+    "HINDUNILVR": 300,
+    "ITC": 1600,
+    "LT": 175,
+    "SBIN": 750,
+    "BHARTIARTL": 475
 }
 
 # ---------------------------------
