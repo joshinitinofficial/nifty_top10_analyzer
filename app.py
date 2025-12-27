@@ -17,32 +17,34 @@ st.set_page_config(
 # ---------------------------------
 st.markdown("""
 <style>
-/* Remove Streamlit default top padding */
+/* Safe top padding – prevents cutting */
 .block-container {
-    padding-top: 1.2rem;
+    padding-top: 2.5rem;
 }
 
-/* Centered main heading with equal spacing */
+/* Main title styling */
 .main-title {
     text-align: center;
-    margin-top: 10px;
+    margin-top: 0px;
     margin-bottom: 28px;
     font-size: 28px;
     font-weight: 700;
 }
 
-/* Existing styles */
+/* Column vertical alignment */
 div[data-testid="column"] {
     display: flex;
     align-items: center;
 }
 
+/* Row layout */
 .row-box {
     height: 75px;
     display: flex;
     align-items: center;
 }
 
+/* Text styles */
 .stock-text {
     font-size: 18px;
     font-weight: 700;
@@ -52,10 +54,6 @@ div[data-testid="column"] {
     font-size: 16px;
     color: #4da6ff;
     font-weight: 600;
-}
-
-.lot-text {
-    font-size: 16px;
 }
 
 .contract-text {
