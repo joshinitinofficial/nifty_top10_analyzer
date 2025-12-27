@@ -12,20 +12,37 @@ st.set_page_config(
 )
 
 # ---------------------------------
-# CUSTOM CSS (TEXT SIZE + ALIGNMENT)
+# CUSTOM CSS (ALIGNMENT + TEXT SIZE)
 # ---------------------------------
 st.markdown("""
 <style>
+/* Center everything vertically inside columns */
 div[data-testid="column"] {
     display: flex;
     align-items: center;
 }
-.big-text {
-    font-size: 18px;
-    font-weight: 600;
+
+/* Row container */
+.row-box {
+    height: 90px;
+    display: flex;
+    align-items: center;
 }
-.small-text {
+
+/* Text styles */
+.stock-text {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.cell-text {
     font-size: 16px;
+}
+
+/* Thin row separator */
+.row-separator {
+    border-bottom: 1px solid #2a2a2a;
+    margin: 6px 0 10px 0;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -80,18 +97,17 @@ def fetch_stock_data(symbol):
 def draw_small_chart(df):
     last_year = df[df.index >= (datetime.today() - timedelta(days=365))]
 
-    fig, ax = plt.subplots(figsize=(2.8, 1.2))
-    ax.plot(last_year["Close"], linewidth=1.4)
+    fig, ax = plt.subplots(figsize=(2.8, 1.3))
+    ax.plot(last_year["Close"], linewidth=1.5)
     ax.margins(x=0)
     ax.axis("off")
 
     st.pyplot(fig, clear_figure=True)
 
-
 # ---------------------------------
 # TABLE HEADER
 # ---------------------------------
-headers = st.columns([1.4, 1.2, 1, 1.4, 1.4, 2])
+headers = st.columns([1.6, 1.3, 1, 1.6, 1.4, 2])
 headers[0].markdown("**Stock**")
 headers[1].markdown("**Prev Close**")
 headers[2].markdown("**Lot Size**")
@@ -114,15 +130,33 @@ for stock, symbol in STOCKS.items():
     lot = LOT_SIZES.get(stock, 0)
     contract_value = int(prev_close * lot)
 
-    row = st.columns([1.4, 1.2, 1, 1.4, 1.4, 2])
+    row = st.columns([1.6, 1.3, 1, 1.6, 1.4, 2])
 
-    row[0].markdown(f"<div class='big-text'>{stock}</div>", unsafe_allow_html=True)
-    row[1].markdown(f"<div class='small-text'>{round(prev_close,2)}</div>", unsafe_allow_html=True)
-    row[2].markdown(f"<div class='small-text'>{lot}</div>", unsafe_allow_html=True)
-    row[3].markdown(f"<div class='small-text'>₹ {contract_value:,}</div>", unsafe_allow_html=True)
-    row[4].markdown(f"<div class='small-text'>{pct_below_ath} %</div>", unsafe_allow_html=True)
+    row[0].markdown(
+        f"<div class='row-box stock-text'>{stock}</div>",
+        unsafe_allow_html=True
+    )
+    row[1].markdown(
+        f"<div class='row-box cell-text'>{round(prev_close,2)}</div>",
+        unsafe_allow_html=True
+    )
+    row[2].markdown(
+        f"<div class='row-box cell-text'>{lot}</div>",
+        unsafe_allow_html=True
+    )
+    row[3].markdown(
+        f"<div class='row-box cell-text'>₹ {contract_value:,}</div>",
+        unsafe_allow_html=True
+    )
+    row[4].markdown(
+        f"<div class='row-box cell-text'>{pct_below_ath} %</div>",
+        unsafe_allow_html=True
+    )
 
     with row[5]:
         draw_small_chart(df)
+
+    # thin separator after each row
+    st.markdown("<div class='row-separator'></div>", unsafe_allow_html=True)
 
 st.caption("Data Source: Yahoo Finance | Timeframe: Daily")
