@@ -15,7 +15,7 @@ st.set_page_config(
 st.title("📊 NIFTY Top 10 Equal Weight – Live Snapshot")
 
 # ---------------------------------
-# USER CONFIG (EDIT HERE ONLY)
+# USER CONFIG
 # ---------------------------------
 
 STOCKS = {
@@ -31,7 +31,6 @@ STOCKS = {
     "BHARTIARTL": "BHARTIARTL.NS"
 }
 
-# 🔥 STOCK-WISE LOT SIZES (EDIT THIS ONLY)
 LOT_SIZES = {
     "RELIANCE": 100,
     "TCS": 100,
@@ -51,15 +50,15 @@ LOT_SIZES = {
 
 @st.cache_data(ttl=3600)
 def fetch_stock_data(symbol):
-    data = yf.download(
+    df = yf.download(
         symbol,
         period="max",
         interval="1d",
         auto_adjust=False,
         progress=False
     )
-    data.dropna(inplace=True)
-    return data
+    df.dropna(inplace=True)
+    return df
 
 
 def draw_small_chart(df):
@@ -71,9 +70,8 @@ def draw_small_chart(df):
 
     st.pyplot(fig, clear_figure=True)
 
-
 # ---------------------------------
-# DASHBOARD
+# TABLE HEADER
 # ---------------------------------
 
 headers = st.columns(6)
@@ -86,11 +84,15 @@ headers[5].markdown("**1Y Chart**")
 
 st.divider()
 
+# ---------------------------------
+# MAIN LOOP
+# ---------------------------------
+
 for stock, symbol in STOCKS.items():
     df = fetch_stock_data(symbol)
 
-    prev_close = round(df["Close"].iloc[-1], 2)
-    ath = df["High"].max()
+    prev_close = float(df["Close"].iloc[-1])
+    ath = float(df["High"].max())
     pct_below_ath = round(((ath - prev_close) / ath) * 100, 2)
 
     lot = LOT_SIZES.get(stock, 0)
@@ -98,7 +100,7 @@ for stock, symbol in STOCKS.items():
 
     row = st.columns(6)
     row[0].write(stock)
-    row[1].write(prev_close)
+    row[1].write(round(prev_close, 2))
     row[2].write(lot)
     row[3].write(f"₹ {contract_value:,}")
     row[4].write(f"{pct_below_ath} %")
