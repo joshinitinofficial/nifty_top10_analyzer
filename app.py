@@ -119,13 +119,13 @@ LOT_SIZES = {
     "RELIANCE": 500,
     "TCS": 175,
     "HDFCBANK": 550,
-    "INFY": 100,
-    "ICICIBANK": 100,
-    "HINDUNILVR": 100,
-    "ITC": 100,
-    "LT": 100,
-    "SBIN": 100,
-    "BHARTIARTL": 100
+    "INFY": 400,
+    "ICICIBANK": 700,
+    "HINDUNILVR": 300,
+    "ITC": 1600,
+    "LT": 175,
+    "SBIN": 750,
+    "BHARTIARTL": 475
 }
 
 # ---------------------------------
