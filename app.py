@@ -1,6 +1,5 @@
 import streamlit as st
 import yfinance as yf
-import pandas as pd
 import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
 
@@ -12,12 +11,30 @@ st.set_page_config(
     layout="wide"
 )
 
-st.title("📊 NIFTY Top 10 Equal Weight – Live Snapshot")
+# ---------------------------------
+# CUSTOM CSS (TEXT SIZE + ALIGNMENT)
+# ---------------------------------
+st.markdown("""
+<style>
+div[data-testid="column"] {
+    display: flex;
+    align-items: center;
+}
+.big-text {
+    font-size: 18px;
+    font-weight: 600;
+}
+.small-text {
+    font-size: 16px;
+}
+</style>
+""", unsafe_allow_html=True)
+
+st.markdown("## 📊 NIFTY Top 10 Equal Weight – Live Snapshot")
 
 # ---------------------------------
 # USER CONFIG
 # ---------------------------------
-
 STOCKS = {
     "RELIANCE": "RELIANCE.NS",
     "TCS": "TCS.NS",
@@ -47,7 +64,6 @@ LOT_SIZES = {
 # ---------------------------------
 # FUNCTIONS
 # ---------------------------------
-
 @st.cache_data(ttl=3600)
 def fetch_stock_data(symbol):
     df = yf.download(
@@ -64,17 +80,18 @@ def fetch_stock_data(symbol):
 def draw_small_chart(df):
     last_year = df[df.index >= (datetime.today() - timedelta(days=365))]
 
-    fig, ax = plt.subplots(figsize=(3, 1))
-    ax.plot(last_year["Close"], linewidth=1)
+    fig, ax = plt.subplots(figsize=(2.8, 1.2))
+    ax.plot(last_year["Close"], linewidth=1.4)
+    ax.margins(x=0)
     ax.axis("off")
 
     st.pyplot(fig, clear_figure=True)
 
+
 # ---------------------------------
 # TABLE HEADER
 # ---------------------------------
-
-headers = st.columns(6)
+headers = st.columns([1.4, 1.2, 1, 1.4, 1.4, 2])
 headers[0].markdown("**Stock**")
 headers[1].markdown("**Prev Close**")
 headers[2].markdown("**Lot Size**")
@@ -87,7 +104,6 @@ st.divider()
 # ---------------------------------
 # MAIN LOOP
 # ---------------------------------
-
 for stock, symbol in STOCKS.items():
     df = fetch_stock_data(symbol)
 
@@ -98,12 +114,13 @@ for stock, symbol in STOCKS.items():
     lot = LOT_SIZES.get(stock, 0)
     contract_value = int(prev_close * lot)
 
-    row = st.columns(6)
-    row[0].write(stock)
-    row[1].write(round(prev_close, 2))
-    row[2].write(lot)
-    row[3].write(f"₹ {contract_value:,}")
-    row[4].write(f"{pct_below_ath} %")
+    row = st.columns([1.4, 1.2, 1, 1.4, 1.4, 2])
+
+    row[0].markdown(f"<div class='big-text'>{stock}</div>", unsafe_allow_html=True)
+    row[1].markdown(f"<div class='small-text'>{round(prev_close,2)}</div>", unsafe_allow_html=True)
+    row[2].markdown(f"<div class='small-text'>{lot}</div>", unsafe_allow_html=True)
+    row[3].markdown(f"<div class='small-text'>₹ {contract_value:,}</div>", unsafe_allow_html=True)
+    row[4].markdown(f"<div class='small-text'>{pct_below_ath} %</div>", unsafe_allow_html=True)
 
     with row[5]:
         draw_small_chart(df)
