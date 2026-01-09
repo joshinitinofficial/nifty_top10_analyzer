@@ -25,7 +25,7 @@ components.html(
             src="https://cosmofeed.com/assets/embed/booking-embed.js">
     </script>
     """,
-    height=800,   # adjust if needed
+    height=1000,   # adjust if needed
     scrolling=True
 )
 
