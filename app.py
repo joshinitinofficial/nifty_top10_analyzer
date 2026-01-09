@@ -2,7 +2,6 @@ import streamlit as st
 import yfinance as yf
 import pandas as pd
 import matplotlib.pyplot as plt
-import streamlit.components.v1 as components
 from datetime import datetime, timedelta, timezone
 
 # ---------------------------------
@@ -11,22 +10,6 @@ from datetime import datetime, timedelta, timezone
 st.set_page_config(
     page_title="NIFTY Top 10 Snapshot",
     layout="wide"
-)
-
-st.markdown("## 📅 Book a 1-to-1 Session")
-
-components.html(
-    """
-    <div id="booking-embed"
-         data-src="https://superprofile.bio/bookings/beingsystemtrader?all&type=embedBooking&embedBgColor=673BF4">
-    </div>
-
-    <script id="cosmofeed-embed-booking"
-            src="https://cosmofeed.com/assets/embed/booking-embed.js">
-    </script>
-    """,
-    height=1000,   # adjust if needed
-    scrolling=True
 )
 
 # ---------------------------------
