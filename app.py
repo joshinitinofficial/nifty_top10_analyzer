@@ -12,17 +12,8 @@ st.set_page_config(
     layout="wide"
 )
 st.markdown(
-    """
-    <div style="text-align:center; font-size:14px; margin-top:-8px;">
-        📅 <b>Book 1:1 Session with me:</b>
-        <a href="https://superprofile.bio/bookings/beingsystemtrader" 
-           target="_blank"
-           style="color:#673BF4; text-decoration:none; font-weight:600;">
-           Click here
-        </a>
-    </div>
-    """,
-    unsafe_allow_html=True
+    "📅 **Book 1:1 Session with me:** "
+    "[Click here](https://superprofile.bio/bookings/beingsystemtrader)",
 )
 
 # ---------------------------------
